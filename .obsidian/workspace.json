@@ -179,6 +179,13 @@
   },
   "active": "cbd431fe8979b6e1",
   "lastOpenFiles": [
+    "monitor/seen.json",
+    "monitor/seen.json.tmp.60342.1776031204769",
+    "monitor/requirements.txt",
+    "monitor/requirements.txt.tmp.60342.1776031202165",
+    "monitor/monitor.py",
+    "monitor/monitor.py.tmp.60342.1776031199437",
+    "monitor",
     "outputs/2026-04-12-github-trending.md",
     "outputs/github_trending.py",
     "wiki/sources/pg-do-things-that-dont-scale.md",
@@ -187,18 +194,12 @@
     "wiki/index.md.tmp.3900.1776010121118",
     "log.md.tmp.3900.1776010115748",
     "research_kz_payroll_2026-04-12.md",
-    "research_kz_payroll_2026-04-12.md.tmp.3900.1776010106223",
     "wiki/startups/dev-pain-points-v2.md",
     "wiki/people/karpathy-coding-thesis.md",
     "research_vibescan_2026-03-29.md",
     "research_2026-03-28.md",
-    "hot.md.tmp.1286.1775596335829",
     "research_kz_smb_2026-04-08.md",
-    "research_kz_smb_2026-04-08.md.tmp.1286.1775596323725",
-    "hot.md.tmp.1286.1775594814423",
-    "log.md.tmp.1286.1775594808470",
     "research_devproblems_2026-04-08.md",
-    "research_devproblems_2026-04-08.md.tmp.1286.1775594802032",
     "wiki/sources/pg-default-alive-or-dead.md",
     "raw/How to Get Startup Ideas.md",
     "hot.md",
@@ -217,7 +218,6 @@
     "wiki/farzapedia-personal-wiki-agents.md",
     "wiki/concepts/cli-tools-claude-code.md",
     "wiki/people/farzatv-personal-wiki.md",
-    "article.md",
-    "raw/Thread by @swyx 1.md"
+    "article.md"
   ]
 }

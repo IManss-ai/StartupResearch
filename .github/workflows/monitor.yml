@@ -1,0 +1,63 @@
+name: Tech Monitor
+
+on:
+  schedule:
+    - cron: '0 * * * *'   # every hour UTC (= every hour, laptop-independent)
+  workflow_dispatch:        # allows manual trigger from GitHub UI
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: pip-monitor-${{ hashFiles('monitor/requirements.txt') }}
+
+      # Twitter cookies are stored in cache (private even on public repos)
+      - name: Restore Twitter cookies
+        uses: actions/cache@v4
+        with:
+          path: monitor/twitter_cookies.json
+          key: twitter-cookies-${{ github.run_number }}
+          restore-keys: twitter-cookies-
+
+      - name: Install dependencies
+        run: pip install -r monitor/requirements.txt
+
+      - name: Run monitor
+        env:
+          TELEGRAM_TOKEN:   ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TWITTER_USERNAME: ${{ secrets.TWITTER_USERNAME }}
+          TWITTER_EMAIL:    ${{ secrets.TWITTER_EMAIL }}
+          TWITTER_PASSWORD: ${{ secrets.TWITTER_PASSWORD }}
+        run: python monitor/monitor.py
+
+      # Save updated cookies back to cache
+      - name: Save Twitter cookies
+        uses: actions/cache@v4
+        with:
+          path: monitor/twitter_cookies.json
+          key: twitter-cookies-${{ github.run_number }}
+
+      # Commit seen.json so duplicate filtering persists across runs
+      - name: Commit seen.json
+        run: |
+          git config user.name "Research Brain Bot"
+          git config user.email "bot@noreply.github.com"
+          git add monitor/seen.json
+          git diff --staged --quiet || git commit -m "auto: monitor seen [skip ci]"
+          git push
