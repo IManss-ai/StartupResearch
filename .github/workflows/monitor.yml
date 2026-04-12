@@ -43,9 +43,11 @@ jobs:
         env:
           TELEGRAM_TOKEN:   ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          TWITTER_USERNAME: ${{ secrets.TWITTER_USERNAME }}
-          TWITTER_EMAIL:    ${{ secrets.TWITTER_EMAIL }}
-          TWITTER_PASSWORD: ${{ secrets.TWITTER_PASSWORD }}
+          TWITTER_USERNAME:     ${{ secrets.TWITTER_USERNAME }}
+          TWITTER_EMAIL:        ${{ secrets.TWITTER_EMAIL }}
+          TWITTER_PASSWORD:     ${{ secrets.TWITTER_PASSWORD }}
+          REDDIT_CLIENT_ID:     ${{ secrets.REDDIT_CLIENT_ID }}
+          REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
         run: python monitor/monitor.py
 
       # Save updated cookies back to cache

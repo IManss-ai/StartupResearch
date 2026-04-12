@@ -15,11 +15,13 @@ SCRIPT_DIR   = Path(__file__).parent
 SEEN_FILE    = SCRIPT_DIR / "seen.json"
 COOKIES_FILE = SCRIPT_DIR / "twitter_cookies.json"
 
-TELEGRAM_TOKEN    = os.environ.get("TELEGRAM_TOKEN", "")
-TELEGRAM_CHAT_ID  = os.environ.get("TELEGRAM_CHAT_ID", "")
-TWITTER_USERNAME  = os.environ.get("TWITTER_USERNAME", "")
-TWITTER_EMAIL     = os.environ.get("TWITTER_EMAIL", "")
-TWITTER_PASSWORD  = os.environ.get("TWITTER_PASSWORD", "")
+TELEGRAM_TOKEN      = os.environ.get("TELEGRAM_TOKEN", "")
+TELEGRAM_CHAT_ID    = os.environ.get("TELEGRAM_CHAT_ID", "")
+TWITTER_USERNAME    = os.environ.get("TWITTER_USERNAME", "")
+TWITTER_EMAIL       = os.environ.get("TWITTER_EMAIL", "")
+TWITTER_PASSWORD    = os.environ.get("TWITTER_PASSWORD", "")
+REDDIT_CLIENT_ID    = os.environ.get("REDDIT_CLIENT_ID", "")
+REDDIT_CLIENT_SECRET= os.environ.get("REDDIT_CLIENT_SECRET", "")
 
 # --- Thresholds (tune these if you get too many / too few notifications) ---
 HN_MIN_SCORE       = 150    # HN points
@@ -114,41 +116,41 @@ def fetch_hn(seen_ids: list) -> list:
         print(f"  HN error: {e}")
     return results
 
-# --- Reddit -------------------------------------------------------------
+# --- Reddit (PRAW — official free API) ----------------------------------
 
 def fetch_reddit(seen_ids: list) -> list:
     results = []
-    # Use old.reddit.com JSON — less aggressive bot detection than www.reddit.com
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        "Accept": "application/json",
-    }
-    for sub in REDDIT_SUBS:
-        try:
-            resp = requests.get(
-                f"https://old.reddit.com/r/{sub}/hot.json?limit=10",
-                headers=headers,
-                timeout=10,
-            )
-            if resp.status_code != 200 or not resp.text.strip():
-                print(f"  Reddit r/{sub}: HTTP {resp.status_code}, skipping")
-                continue
-            data = resp.json()
-            for post in data["data"]["children"]:
-                p = post["data"]
-                pid = p["id"]
-                if pid in seen_ids or p.get("stickied"):
-                    continue
-                if p.get("ups", 0) >= REDDIT_MIN_UPVOTES:
-                    results.append({
-                        "id":        pid,
-                        "title":     p["title"],
-                        "url":       f"https://reddit.com{p['permalink']}",
-                        "upvotes":   p["ups"],
-                        "subreddit": sub,
-                    })
-        except Exception as e:
-            print(f"  Reddit r/{sub} error: {e}")
+    if not REDDIT_CLIENT_ID or not REDDIT_CLIENT_SECRET:
+        print("  Reddit credentials not set — skipping.")
+        return results
+    try:
+        import praw
+        reddit = praw.Reddit(
+            client_id=REDDIT_CLIENT_ID,
+            client_secret=REDDIT_CLIENT_SECRET,
+            user_agent="StartupResearch-Monitor/1.0 (personal project by u/your_username)",
+            ratelimit_seconds=1,
+        )
+        for sub in REDDIT_SUBS:
+            try:
+                subreddit = reddit.subreddit(sub)
+                for post in subreddit.hot(limit=10):
+                    if post.stickied or post.id in seen_ids:
+                        continue
+                    if post.score >= REDDIT_MIN_UPVOTES:
+                        results.append({
+                            "id":        post.id,
+                            "title":     post.title,
+                            "url":       f"https://reddit.com{post.permalink}",
+                            "upvotes":   post.score,
+                            "subreddit": sub,
+                        })
+            except Exception as e:
+                print(f"  Reddit r/{sub} error: {e}")
+    except ImportError:
+        print("  praw not installed — skipping Reddit.")
+    except Exception as e:
+        print(f"  Reddit error: {e}")
     return results
 
 # --- Twitter (twikit) ---------------------------------------------------
@@ -160,57 +162,43 @@ async def _twitter_async(seen_ids: list) -> list:
         return results
 
     try:
-        from twikit import Client
+        import twscrape
+        from twscrape import API, gather
     except ImportError:
-        print("  twikit not installed — skipping Twitter.")
+        print("  twscrape not installed — skipping Twitter.")
         return results
 
-    client = Client("en-US")
+    try:
+        api = API()
+        # Add account if not already added
+        await api.pool.add_account(
+            TWITTER_USERNAME,
+            TWITTER_PASSWORD,
+            TWITTER_EMAIL,
+            TWITTER_PASSWORD,  # email password = twitter password for simplicity
+        )
+        await api.pool.login_all()
 
-    # Restore saved cookies to avoid logging in every hour
-    if COOKIES_FILE.exists():
-        try:
-            client.load_cookies(str(COOKIES_FILE))
-            print("  Loaded Twitter cookies.")
-        except Exception:
-            print("  Cookies invalid — re-logging in.")
-            COOKIES_FILE.unlink(missing_ok=True)
-
-    if not COOKIES_FILE.exists():
-        try:
-            await client.login(
-                auth_info_1=TWITTER_USERNAME,
-                auth_info_2=TWITTER_EMAIL,
-                password=TWITTER_PASSWORD,
-            )
-            client.save_cookies(str(COOKIES_FILE))
-            print("  Logged in and saved cookies.")
-        except Exception as e:
-            print(f"  Twitter login failed: {e}")
-            return results
-
-    for query in TWITTER_QUERIES[:3]:   # max 3 queries to stay under rate limit
-        try:
-            tweets = await client.search_tweet(query, product="Top", count=10)
-            for tweet in tweets:
-                tid   = str(tweet.id)
-                likes = getattr(tweet, "favorite_count", 0) or 0
-                if tid in seen_ids or likes < TWITTER_MIN_LIKES:
-                    continue
-                author = ""
-                if tweet.user:
-                    author = getattr(tweet.user, "screen_name", "") or ""
-                results.append({
-                    "id":       tid,
-                    "text":     (tweet.text or "")[:280],
-                    "url":      f"https://x.com/i/web/status/{tid}",
-                    "likes":    likes,
-                    "retweets": getattr(tweet, "retweet_count", 0) or 0,
-                    "author":   author,
-                    "query":    query,
-                })
-        except Exception as e:
-            print(f"  Twitter query '{query}' error: {e}")
+        for query in TWITTER_QUERIES[:3]:
+            try:
+                tweets = await gather(api.search(f"{query} min_faves:{TWITTER_MIN_LIKES}", limit=5))
+                for tweet in tweets:
+                    tid = str(tweet.id)
+                    if tid in seen_ids:
+                        continue
+                    results.append({
+                        "id":       tid,
+                        "text":     (tweet.rawContent or "")[:280],
+                        "url":      tweet.url or f"https://x.com/i/web/status/{tid}",
+                        "likes":    tweet.likeCount or 0,
+                        "retweets": tweet.retweetCount or 0,
+                        "author":   tweet.user.username if tweet.user else "unknown",
+                        "query":    query,
+                    })
+            except Exception as e:
+                print(f"  Twitter query '{query}' error: {e}")
+    except Exception as e:
+        print(f"  Twitter error: {e}")
 
     return results
 
