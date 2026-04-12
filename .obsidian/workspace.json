@@ -1,0 +1,223 @@
+{
+  "main": {
+    "id": "5cff8e45767596cc",
+    "type": "split",
+    "children": [
+      {
+        "id": "b73023b241dca7b4",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "cbd431fe8979b6e1",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Graph view"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "c693961866a7e2af",
+    "type": "split",
+    "children": [
+      {
+        "id": "3b0bd814276c3ab9",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "7921f657fa7045c3",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "cc429bbe3dc08faa",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "wiki/startups/pg-synthesis.md",
+                "matchingCase": true,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "915c7b434d0cdfd9",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ],
+        "currentTab": 1
+      }
+    ],
+    "direction": "horizontal",
+    "width": 200
+  },
+  "right": {
+    "id": "8b82f0f6e3df27f1",
+    "type": "split",
+    "children": [
+      {
+        "id": "6fa34bb6aee1527b",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "497f8c57f558d4d7",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "fab6ae517dafa5bd",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "6f8c4a89913a241c",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "d1a6ae2fc62d0c88",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "6a5ec3998e882f70",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "cbd431fe8979b6e1",
+  "lastOpenFiles": [
+    "outputs/2026-04-12-github-trending.md",
+    "outputs/github_trending.py",
+    "wiki/sources/pg-do-things-that-dont-scale.md",
+    "Untitled 3.canvas",
+    "hot.md.tmp.3900.1776010122460",
+    "wiki/index.md.tmp.3900.1776010121118",
+    "log.md.tmp.3900.1776010115748",
+    "research_kz_payroll_2026-04-12.md",
+    "research_kz_payroll_2026-04-12.md.tmp.3900.1776010106223",
+    "wiki/startups/dev-pain-points-v2.md",
+    "wiki/people/karpathy-coding-thesis.md",
+    "research_vibescan_2026-03-29.md",
+    "research_2026-03-28.md",
+    "hot.md.tmp.1286.1775596335829",
+    "research_kz_smb_2026-04-08.md",
+    "research_kz_smb_2026-04-08.md.tmp.1286.1775596323725",
+    "hot.md.tmp.1286.1775594814423",
+    "log.md.tmp.1286.1775594808470",
+    "research_devproblems_2026-04-08.md",
+    "research_devproblems_2026-04-08.md.tmp.1286.1775594802032",
+    "wiki/sources/pg-default-alive-or-dead.md",
+    "raw/How to Get Startup Ideas.md",
+    "hot.md",
+    "outputs/2026-04-06-emerging-market-ideas.md",
+    "log.md",
+    "Untitled 2.canvas",
+    "2026-04-06.md",
+    "Untitled 1.canvas",
+    "wiki/index.md",
+    "wiki/sources/pg-how-to-get-startup-ideas.md",
+    "Untitled.canvas",
+    "wiki/startups/pg-synthesis.md",
+    "wiki/people/swyx-long-term-games.md",
+    "raw/Do Things that Don't Scale.md",
+    "raw/Default Alive or Default Dead.md",
+    "wiki/farzapedia-personal-wiki-agents.md",
+    "wiki/concepts/cli-tools-claude-code.md",
+    "wiki/people/farzatv-personal-wiki.md",
+    "article.md",
+    "raw/Thread by @swyx 1.md"
+  ]
+}
