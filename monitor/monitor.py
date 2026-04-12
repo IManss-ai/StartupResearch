@@ -118,14 +118,22 @@ def fetch_hn(seen_ids: list) -> list:
 
 def fetch_reddit(seen_ids: list) -> list:
     results = []
-    headers = {"User-Agent": "StartupResearch-Monitor/1.0 (personal project)"}
+    # Use old.reddit.com JSON — less aggressive bot detection than www.reddit.com
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Accept": "application/json",
+    }
     for sub in REDDIT_SUBS:
         try:
-            data = requests.get(
-                f"https://www.reddit.com/r/{sub}/hot.json?limit=10",
+            resp = requests.get(
+                f"https://old.reddit.com/r/{sub}/hot.json?limit=10",
                 headers=headers,
                 timeout=10,
-            ).json()
+            )
+            if resp.status_code != 200 or not resp.text.strip():
+                print(f"  Reddit r/{sub}: HTTP {resp.status_code}, skipping")
+                continue
+            data = resp.json()
             for post in data["data"]["children"]:
                 p = post["data"]
                 pid = p["id"]
